@@ -66,14 +66,15 @@ local function is_snake_eatable(pos,body)
     end
     return
   else
+    local fleaves,fpeat = 1/9,1
     if nodecore.buildable_to(pos) then
-      return 0,0.01
+      return 0,0.001
     end
     if node.name == "nc_tree:leaves" or node.name == "nc_tree:leaves_loose" then
-      return 1/8,1/32
+      return fleaves,fleaves/32
     end
     if node.name == "nc_tree:peat" then
-      return 1,0.1
+      return fpeat,fpeat/32
     end
   end
 end
@@ -106,9 +107,11 @@ function nodecore.snake_check(pos,r,am)
         local d = dx*dx+dy*dy+dz*dz
         if d > 0 then
           d = d^0.5
-          local v = am[h] or nodecore.snake_attractiveness(pos)
-          score = score + v * ((r-d)/r)^1.5
-          am[h] = v
+          if (r-d) > 0 then
+            local v = am[h] or nodecore.snake_attractiveness(pos)
+            score = score + v * ((r-d)/r)^1.5
+            am[h] = v
+          end
         end
       end
     end
@@ -282,7 +285,8 @@ function nodecore.snake_construct(pos)
   local t = DEFAULT_TIMER
   timer:set(t,timer:get_elapsed()-t)
   local meta = minetest.get_meta(pos)
-  meta:set_int("snake_len",5)
+  meta:set_int("snake_len",3)
 end
 
 include("node.lua")
+include("gen.lua")
