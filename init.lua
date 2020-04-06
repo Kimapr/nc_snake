@@ -87,7 +87,7 @@ function nodecore.snake_attractiveness(pos)
   --score=score+l
   local f,p = nodecore.is_snake_eatable(pos)
   if f then
-    score = score + f * 100
+    score = score + (f^2) * 100
   end
   return score
 end
@@ -118,6 +118,14 @@ function nodecore.snake_check(pos,r,am)
   end
   score = score + nodecore.is_snake_eatable(pos)*10000
   return -score
+end
+
+local function eatsound(pos)
+  local node = minetest.get_node(pos)
+  local def = minetest.registered_items[node.name]
+  if def.sounds and def.sounds.dug then
+    nodecore.sound_play(def.sounds.dug, {gain = 1, pos = pos})
+  end
 end
 
 local function snake_step(pos,node)
@@ -179,12 +187,14 @@ local function snake_step(pos,node)
     food = food + f
     poop = poop + p
     head.node.param2 = n
+    eatsound(d)
     rnpos = d
   else
     local f,p = nodecore.is_snake_eatable(fposes[3])
     if f then
       food = food + f
       poop = poop + p
+      eatsound(fposes[3])
       rnpos = fposes[3]
     end
   end
