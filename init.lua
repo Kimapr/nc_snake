@@ -247,7 +247,7 @@ local function snake_step(pos,node)
       meta:from_table(t)
     end]]
     local tailmoved = false
-    print(len,#body-1)
+    --print(len,#body-1)
     if len == (#body-1) then
       if poop > 1 and body[2] and minetest.get_item_group(body[2].node.name,"snake_poop") == 0 then
         poop = poop-1
@@ -282,9 +282,11 @@ end
 local DEFAULT_TIMER = 0.5
 
 function nodecore.snake_step(pos,elapsed)
-  local ts = minetest.get_us_time()
-  pos = snake_step(pos,minetest.get_node(pos))
-  print("snake step took " .. (minetest.get_us_time()-ts)/1000000 .. " sec")
+  --local ts = minetest.get_us_time()
+  if not nodecore.stasis then
+    pos = snake_step(pos,minetest.get_node(pos))
+  end
+  --print("snake step took " .. (minetest.get_us_time()-ts)/1000000 .. " sec")
   local timer = minetest.get_node_timer(pos)
   local t = DEFAULT_TIMER
   timer:set(t,timer:get_elapsed()-t)
@@ -292,7 +294,7 @@ end
 
 function nodecore.snake_construct(pos)
   local meta = minetest.get_meta(pos)
-  if meta:get_bool("snake_gen") then
+  if meta:get_int("snake_gen") ~= 0 then
     return
   end
   minetest.set_node(pos,{name=modname..":head",param2=math.random(0,3)})
@@ -301,8 +303,16 @@ function nodecore.snake_construct(pos)
   local t = DEFAULT_TIMER
   timer:set(t,timer:get_elapsed()-t)
   meta:set_int("snake_len",3)
-  meta:set_bool("snake_gen",true)
+  meta:set_int("snake_gen",1)
 end
+
+minetest.register_lbm({
+  name=modname..":snake_construct",
+  nodenames={modname..":head"},
+  action=function(pos,node)
+    nodecore.snake_construct(pos)
+  end
+})
 
 include("node.lua")
 include("gen.lua")
