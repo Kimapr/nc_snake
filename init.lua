@@ -291,11 +291,17 @@ function nodecore.snake_step(pos,elapsed)
 end
 
 function nodecore.snake_construct(pos)
+  local meta = minetest.get_meta(pos)
+  if meta:get_bool("snake_gen") then
+    return
+  end
+  minetest.set_node(pos,{name=modname..":head",param2=math.random(0,3)})
+  meta = minetest.get_meta(pos) -- not sure if setting nodes replaces the metadata object
   local timer = minetest.get_node_timer(pos)
   local t = DEFAULT_TIMER
   timer:set(t,timer:get_elapsed()-t)
-  local meta = minetest.get_meta(pos)
   meta:set_int("snake_len",3)
+  meta:set_bool("snake_gen",true)
 end
 
 include("node.lua")

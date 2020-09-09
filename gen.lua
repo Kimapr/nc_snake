@@ -5,12 +5,22 @@ local nodecore, minetest
 
 local modname = minetest.get_current_modname()
 
-minetest.register_on_generated(function(p1,p2)
-  local pl = minetest.find_nodes_in_area(p1,p2,{"nc_tree:leaves"})
-  for k,pos in ipairs(pl) do
-    if math.random(6000) == 1 then
-      minetest.set_node(pos,{name=modname..":head",param2=math.random(0,3)})
-      nodecore.snake_construct(pos)
+local c_leaves = minetest.get_content_id("nc_tree:leaves")
+local c_snake = minetest.get_content_id(modname..":head")
+nodecore.register_mapgen_shared({
+  label = "snake spawn",
+  func = function(minp, maxp, area, data, _, _, _, rng)
+    local ai = area.index
+    for z = minp.z, maxp.z do
+      for y = minp.y, maxp.y do
+        local offs = ai(area, 0, y, z)
+        for x = minp.x, maxp.x do
+          local i = offs + x
+          if data[i] == c_leaves and rng(1, 6000) == 1 then
+            data[i] = c_snake
+          end
+        end
+      end
     end
   end
-end)
+})
