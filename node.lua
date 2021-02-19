@@ -51,7 +51,6 @@ for n=1,#mats do
     description = "Snake Head",
     tiles = {[5]=tile.."^(nc_sponge.png^[mask:nc_lode_mask_ore.png)"},
     groups = {snake_head = 1},
-    on_timer = nodecore.snake_step,
     after_place_node = nodecore.snake_construct
   },def)
 
@@ -63,3 +62,11 @@ for n=1,#mats do
   minetest.register_node(headname,def_h)
   minetest.register_node(bodyname,def_b)
 end
+
+nodecore.register_dnt({
+	name=modname..":snekstep",
+	nodenames={modname..":head",modname.."head_lodey"},
+	action=nodecore.snake_step,
+	time=0.5,
+	loop=true,
+})

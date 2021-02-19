@@ -287,9 +287,7 @@ function nodecore.snake_step(pos,elapsed)
     pos = snake_step(pos,minetest.get_node(pos))
   end
   --print("snake step took " .. (minetest.get_us_time()-ts)/1000000 .. " sec")
-  local timer = minetest.get_node_timer(pos)
-  local t = DEFAULT_TIMER
-  timer:set(t,timer:get_elapsed()-t)
+  nodecore.dnt_set(pos,modname..":snekstep")
 end
 
 function nodecore.snake_construct(pos)
@@ -301,7 +299,7 @@ function nodecore.snake_construct(pos)
   meta = minetest.get_meta(pos) -- not sure if setting nodes replaces the metadata object
   local timer = minetest.get_node_timer(pos)
   local t = DEFAULT_TIMER
-  timer:set(t,timer:get_elapsed()-t)
+  nodecore.dnt_set(pos,modname..":snekstep")
   meta:set_int("snake_len",3)
   meta:set_int("snake_gen",1)
 end
