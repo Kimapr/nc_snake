@@ -293,6 +293,7 @@ end
 function nodecore.snake_construct(pos)
   local meta = minetest.get_meta(pos)
   if meta:get_int("snake_gen") ~= 0 then
+    nodecore.dnt_set(pos,modname..":snekstep")
     return
   end
   minetest.set_node(pos,{name=modname..":head",param2=math.random(0,3)})
@@ -304,13 +305,25 @@ function nodecore.snake_construct(pos)
   meta:set_int("snake_gen",1)
 end
 
-minetest.register_lbm({
-  name=modname..":snake_construct",
-  nodenames={modname..":head"},
-  action=function(pos,node)
-    nodecore.snake_construct(pos)
-  end
-})
+--minetest.register_lbm({
+--  name=modname..":snake_construct",
+--  nodenames={modname..":head"},
+--  action=function(pos,node)
+--    nodecore.snake_construct(pos)
+--  end
+--})
+
+nodecore.register_craft({
+		label = "wake snek from deep sleep",
+		action = "pummel",
+		toolgroups = {thumpy = 1},
+		nodes = {
+			{match = {groups={snake_head=true}}}
+		},
+		after=function(data)
+			nodecore.snake_construct(data)
+		end
+	})
 
 include("node.lua")
 include("gen.lua")
