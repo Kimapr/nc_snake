@@ -327,3 +327,4 @@ nodecore.register_craft({
 
 include("node.lua")
 include("gen.lua")
+include("renew.lua")
