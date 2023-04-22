@@ -3,6 +3,14 @@ local nodecore, minetest, include
     = nodecore, minetest, include
 -- LUALOCALS < ---------------------------------------------------------
 
+local old_regnode=minetest.register_node
+function minetest.register_node(n,d)
+  local unpack=unpack or table.unpack
+  local ret={old_regnode(n,d)}
+  minetest.register_alias(n:gsub("^nc_snakes:","nc_snake:"),n)
+  return unpack(ret)
+end
+
 local modname = minetest.get_current_modname()
 local dirs = {
   {x=-1,y=0,z=0 },
@@ -328,3 +336,5 @@ nodecore.register_craft({
 include("node.lua")
 include("gen.lua")
 include("renew.lua")
+
+minetest.register_node=old_regnode
