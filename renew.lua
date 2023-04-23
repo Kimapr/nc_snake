@@ -78,7 +78,7 @@ minetest.register_abm({
 			local p = vector.add(pos, dirs[math_random(1, #dirs)])
 			local n = minetest.get_node(p)
 			if n.name ~= "nc_tree:peat" then return end
-			nodecore.set_loud(pos, {name = "nc_terrain:sand_loose"})
+			nodecore.set_loud(p, {name = "nc_terrain:sand_loose"})
 			if math_random(1, 10) ~= 1 then return end
 			nodecore.set_loud(pos, {name = modname .. ":head"})
 			nodecore.snake_construct(pos)
