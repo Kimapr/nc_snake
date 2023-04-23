@@ -114,8 +114,8 @@ nodecore.register_craft({
 			},
 			{
 				y = -1,
-				match = modname .. "spore",
-				replace = basename
+				match = "nc_sponge:sponge_living",
+				replace = modname .. ":spore"
 			}
 		}
 	})
