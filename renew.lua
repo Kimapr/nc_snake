@@ -1,6 +1,6 @@
 -- LUALOCALS < ---------------------------------------------------------
-local math, minetest, nodecore, tostring, vector
-    = math, minetest, nodecore, tostring, vector
+local math, minetest, nodecore, tostring, vector, ItemStack
+    = math, minetest, nodecore, tostring, vector, ItemStack
 local math_ceil, math_cos, math_pi, math_random
     = math.ceil, math.cos, math.pi, math.random
 -- LUALOCALS > ---------------------------------------------------------
@@ -94,8 +94,9 @@ nodecore.register_aism({
 		action = function(stack, data)
 			if nodecore.spongesurvive(data) then return end
 			nodecore.sound_play("nc_terrain_swishy", {gain = 1, pos = data.pos})
-			local nofit = data.inv:add_item("main", "nc_stonework:chip 4")
-			if not nofit:is_empty() then nodecore.item_eject(data.pos, nofit) end
+			local chips = ItemStack("nc_stonework:chip 4")
+			if data.inv then chips = data.inv:add_item("main", chips) end
+			if not chips:is_empty() then nodecore.item_eject(data.pos, chips) end
 			stack:set_name("nc_sponge:sponge_wet")
 			return stack
 		end
